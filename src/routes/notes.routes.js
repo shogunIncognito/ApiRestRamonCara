@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import { getNotes, postNotes, deleteNotes, getNoteID, updateNote } from '../controllers/notes.controller.js';
+import { getNotes, postNotes, deleteNotes, getNoteID, updateNote, getNotesUser } from '../controllers/notes.controller.js';
+import { validateToken, isAdmin } from '../middlewares/validateLogin.js';
 
 const router = Router()
 
-router.get('/notes/', getNotes)
-      .get('/notes/:id', getNoteID)
-      .post('/notes/', postNotes)
-      .delete('/notes/:id', deleteNotes)
-      .patch('/notes/:id', updateNote)
-      
+router.get('/', [validateToken, isAdmin],  getNotes)
+      .get('/:id', validateToken, getNoteID)
+      .get('/user/:userid', validateToken, getNotesUser)
+      .post('/', validateToken, postNotes)
+      .delete('/:id', validateToken, deleteNotes)
+      .patch('/:id', validateToken, updateNote)
+
 export default router
